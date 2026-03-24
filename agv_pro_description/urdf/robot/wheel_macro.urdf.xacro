@@ -19,7 +19,7 @@
       <xacro:property name="y" value="${wheel_separation_y/2.0}" />
       <xacro:property name="mesh" value="file://$(find agv_pro_description)/meshes/wheel_lf_link.stl" />
       <xacro:property name="visual_rotation" value="${pi}" />
-      <xacro:property name="fdir" value="1.0 -1.0 0.0" />
+      <xacro:property name="fdir" value="1.0 1.0 0.0" />
     </xacro:if>
     
     <!-- 前右轮 -->
@@ -28,7 +28,7 @@
       <xacro:property name="y" value="${-wheel_separation_y/2.0}" />
       <xacro:property name="mesh" value="file://$(find agv_pro_description)/meshes/wheel_rf_link.stl" />
       <xacro:property name="visual_rotation" value="${pi}" />
-      <xacro:property name="fdir" value="1.0 1.0 0.0" />
+      <xacro:property name="fdir" value="1.0 -1.0 0.0" />
     </xacro:if>
          
     <!-- 后左轮 -->
@@ -37,7 +37,7 @@
       <xacro:property name="y" value="${wheel_separation_y/2.0}" />
       <xacro:property name="mesh" value="file://$(find agv_pro_description)/meshes/wheel_lb_link.stl" />
       <xacro:property name="visual_rotation" value="${0.0}" />
-      <xacro:property name="fdir" value="1.0 1.0 0.0" />
+      <xacro:property name="fdir" value="1.0 -1.0 0.0" />
     </xacro:if>
          
     <!-- 后右轮 -->
@@ -46,7 +46,7 @@
       <xacro:property name="y" value="${-wheel_separation_y/2.0}" />
       <xacro:property name="mesh" value="file://$(find agv_pro_description)/meshes/wheel_rb_link.stl" />
       <xacro:property name="visual_rotation" value="${0.0}" />
-      <xacro:property name="fdir" value="1.0 -1.0 0.0" />
+      <xacro:property name="fdir" value="1.0 1.0 0.0" />
     </xacro:if>
 
     <joint name="${side}_wheel_joint" type="continuous">
