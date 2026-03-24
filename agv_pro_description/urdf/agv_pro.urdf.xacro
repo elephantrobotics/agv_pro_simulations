@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="agv_pro">
+
+  <xacro:arg name="controller_config" default="" />
+  <xacro:arg name="namespace" default=""/>
+  <xacro:arg name="use_sim" default="false" />
+
+  <!-- Gazebo-specific properties -->
+  <xacro:property name="controller_config" value="$(arg controller_config)" />
+  <xacro:property name="namespace" value="$(arg namespace)" />
+  <xacro:property name="use_sim" value="$(arg use_sim)" />
+  
+  <xacro:property name="wheel_radius" value="0.076"/>
+  
+  <!-- INCLUDE ROBOT MACRO -->
+  <xacro:include filename="$(find agv_pro_description)/urdf/common/gazebo_control_plugin.urdf.xacro" ns="gazebo" />
+  <xacro:include filename="$(find agv_pro_description)/urdf/common/ros2_controller.urdf.xacro" ns="ros2_control" />
+  <xacro:include filename="$(find agv_pro_description)/urdf/robot/base.urdf.xacro" ns="base" />
+  <xacro:include filename="$(find agv_pro_description)/urdf/robot/wheel_macro.urdf.xacro" ns="wheel_macro" />
+  
+  <!-- BASE -->
+  <xacro:base.base wheel_radius="${wheel_radius}" />
+
+  <!-- Wheels -->
+  <!-- 前左轮  -->
+  <xacro:wheel_macro.wheel wheel_radius="${wheel_radius}" side="lf" /> 
+  <!-- 前右轮  -->
+  <xacro:wheel_macro.wheel wheel_radius="${wheel_radius}" side="rf" />  
+  <!-- 后左轮  -->
+  <xacro:wheel_macro.wheel wheel_radius="${wheel_radius}" side="lb" />
+  <!-- 后右轮  -->
+  <xacro:wheel_macro.wheel wheel_radius="${wheel_radius}" side="rb" />  
+  
+    <!-- HARDWARE PLUGINS -->
+  <xacro:unless value="${use_sim}">
+    <xacro:ros2_control.agv_pro_system namespace="${namespace}" />
+  </xacro:unless>
+
+  <!-- GAZEBO PLUGINS -->
+  <xacro:if value="${use_sim}">
+    <xacro:ros2_control.gz_rosbot_system namespace="${namespace}" />
+    <xacro:gazebo.controller config_file="${controller_config}" namespace="${namespace}" />
+    <xacro:gazebo.imu reference_frame="imu_link" namespace="${namespace}" />
+      
+    <gazebo reference="laser_link">
+      <sensor type="gpu_lidar"  name="laser_sensor" > 
+        <always_on>true</always_on>
+        <update_rate>10</update_rate>
+        <topic>scan</topic> 
+        <frame_id>laser_link</frame_id>
+        <ignition_frame_id>laser_link</ignition_frame_id>
+        <visualize>true</visualize>
+        <ray> 
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.15</min>
+            <max>15.0</max>
+            <resolution>0.06</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type> 
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+      </sensor>
+    </gazebo>
+
+    <gazebo>
+      <plugin filename="libignition-gazebo-sensors-system.so" name="ignition::gazebo::systems::Sensors">
+        <render_engine>ogre2</render_engine> 
+      </plugin>
+    </gazebo>
+  </xacro:if> 
+ 
+</robot>

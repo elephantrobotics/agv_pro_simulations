@@ -1,0 +1,7 @@
+<library path="agv_pro_hardware_interfaces">
+  <class name="agv_pro_hardware_interfaces/AgvProInterface" 
+         type="agv_pro_hardware_interfaces::AgvProInterface" 
+         base_class_type="hardware_interface::SystemInterface">
+    <description>AGV Pro hardware interface</description>
+  </class>
+</library>

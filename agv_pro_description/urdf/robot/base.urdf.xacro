@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- base defining macro -->
+  <xacro:macro name="base" params="wheel_radius">
+    
+    <!-- 直接使用 base_footprint 作为根链接 -->
+    <link name="base_footprint" />
+
+    <!-- 添加 base_link（ROSbot 方法） -->
+    <joint name="footprint_to_base_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.02" rpy="0 0 0" />
+      <parent link="base_footprint" />
+      <child link="base_link" />
+    </joint>
+
+    <link name="base_link">
+      <visual>
+        <geometry>
+          <mesh filename="file://$(find agv_pro_description)/meshes/base_link.stl"/>
+        </geometry>
+        <origin xyz="0.0 0.02 -0.02" rpy="0.0 0.0 0.0" />
+        <material name="Red">
+          <color rgba="1.0 1.0 1.0 1.0" />
+        </material>
+      </visual>
+      <gazebo reference="base_link">
+        <material>Gazebo/White</material>
+      </gazebo>
+
+      <collision>
+        <geometry>
+          <box size="0.5 0.3598 0.2"/>
+        </geometry>
+        <origin xyz="0.0 0.0 0.08" rpy="0.0 0.0 0.0" />
+      </collision>
+
+      <inertial>
+        <mass value="35.6" />
+        <inertia ixx="0.509" ixy="0.0" ixz="0.0"
+                iyy="0.862" iyz="0.0"
+                izz="1.119" />
+        <origin xyz="0.0 0.0 0.08" rpy="0.0 0.0 0.0" />
+      </inertial>
+    </link>
+
+    <link name="laser_link">
+      <visual>
+        <geometry>
+          <mesh filename="file://$(find agv_pro_description)/meshes/laser_link.stl"/>
+        </geometry>
+        <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0" />
+        <material name="White">
+          <color rgba="1.0 1.0 1.0 1.0" />
+        </material>
+      </visual>
+      <gazebo reference="laser_link">
+        <material>Gazebo/White</material>
+      </gazebo>
+
+      <collision>
+        <geometry>
+          <mesh filename="file://$(find agv_pro_description)/meshes/laser_link.stl"/>
+        </geometry>
+        <origin xyz="0.0 0.0 0.01" rpy="0.0 0.0 0.0" />
+      </collision>
+
+      <inertial>
+        <mass value="0.4" />
+        <inertia ixx="2.0572E-05" ixy="8.5013E-08"     ixz="2.0871E-07"
+                                   iyy="2.0483E-05"     iyz="-4.2154E-09"
+                                                         izz="3.4612E-05" />
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      </inertial>
+    </link>
+
+    <joint name="lidar_joint" type="fixed">
+      <origin xyz="0.17891 0.02 0.18928" rpy="0 0 0" />
+      <parent link="base_link" />
+      <child link="laser_link" />
+    </joint>
+
+    <link name="imu_link" />
+
+    <joint name="imu_joint" type="fixed">
+      <origin xyz="0.1 0 0.1" rpy="0 0 0" />
+      <parent link="base_link" />
+      <child link="imu_link" />
+    </joint>
+
+  </xacro:macro>
+</robot>
