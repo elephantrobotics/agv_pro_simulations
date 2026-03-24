@@ -1,0 +1,47 @@
+/**:
+  # 控制器管理器参数部分
+  controller_manager:
+    ros__parameters:
+      update_rate: 100
+
+      # 关节状态广播器
+      joint_state_broadcaster:
+        type: joint_state_broadcaster/JointStateBroadcaster
+
+      # 麦克纳姆轮驱动器控制器
+      mecanum_drive_controller:
+        type: mecanum_drive_controller/MecanumDriveController
+        
+      # IMU传感器广播器
+      imu_broadcaster:
+        type: imu_broadcaster/ImuBroadcaster
+
+  # 麦克纳姆轮控制器参数配置
+  mecanum_drive_controller:
+    ros__parameters:
+      # 根据Gazebo实际加载的关节名称修改
+      front_left_wheel_command_joint_name: lf_wheel_joint
+      front_right_wheel_command_joint_name: rf_wheel_joint
+      rear_left_wheel_command_joint_name: lb_wheel_joint
+      rear_right_wheel_command_joint_name: rb_wheel_joint
+      # 几何参数
+      kinematics:
+        wheels_radius: 0.076
+        sum_of_robot_center_projection_on_X_Y_axis: 0.35
+      
+      # 其他参数
+      base_frame_id: "base_footprint"
+      odom_frame_id: "odom"
+      enable_odom_tf: true  
+      pose_covariance_diagonal: [0.005, 0.005, 0.001, 0.001, 0.001, 0.01]
+      twist_covariance_diagonal: [0.01, 0.01, 0.001, 0.001, 0.001, 0.02]
+    
+      reference_timeout: 0.5
+      use_stamped_vel: false
+
+  # IMU广播器参数
+  imu_broadcaster:
+    ros__parameters:
+      frame_id: "imu_link"
+      topic: "imu/data_raw"
+

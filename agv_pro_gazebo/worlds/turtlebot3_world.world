@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="default">
+
+    <!-- 1. 直接定义太阳光照（无外部模型依赖） -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    
+    <!-- 2. 场景设置 -->
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>false</shadows>
+    </scene>
+
+    <!-- GUI配置（保留原有参数） -->
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>0.319654 -0.035002 9.29441 0 1.5138 0.009599</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    
+    <!-- 3. 物理引擎设置（整合你的优化参数） -->
+    <physics name="default_physics" default="true" type="ode">
+      <real_time_update_rate>100.0</real_time_update_rate>
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <ode>
+        <solver>
+          <type>quick</type>
+          <!-- 提升迭代次数，增强物理计算精度 -->
+          <iters>100</iters>
+          <precon_iters>20</precon_iters>
+          <sor>1.2</sor> <!-- 降低超松弛因子，减少数值震荡 -->
+          <use_dynamic_moi_rescaling>1</use_dynamic_moi_rescaling>
+        </solver>
+        <constraints>
+          <!-- 调大cfm，降低erp，收紧物理约束 -->
+          <cfm>0.0001</cfm>
+          <erp>0.1</erp>
+          <!-- 降低最大修正速度，减少抖动 -->
+          <contact_max_correcting_vel>100.0</contact_max_correcting_vel>
+          <contact_surface_layer>0.001</contact_surface_layer> <!-- 减小接触层厚度，提升贴合度 -->
+        </constraints>
+      </ode>
+    </physics>
+    
+    <!-- 4. 直接定义地面模型（无外部引用） -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>1.0</mu>        <!-- 地面静摩擦系数 -->
+                <mu2>1.0</mu2>      <!-- 地面动摩擦系数 -->
+                <fdir1>0 0 0</fdir1>
+                <slip1>0.01</slip1> <!-- 横向滑移系数（越小越稳） -->
+                <slip2>0.01</slip2> <!-- 纵向滑移系数 -->
+              </ode>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0.0</restitution_coefficient>
+              <threshold>100000.0</threshold>
+            </bounce>
+          </surface>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.2 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 保留turtlebot3_world模型引用 -->
+    <model name="turtlebot3_world">
+      <static>1</static>
+      <include>
+        <uri>model://turtlebot3_world</uri>
+      </include>
+    </model>
+
+  </world>
+</sdf>
